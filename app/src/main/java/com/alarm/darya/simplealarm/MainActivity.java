@@ -1,7 +1,9 @@
 package com.alarm.darya.simplealarm;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -15,6 +17,7 @@ public class MainActivity extends AppCompatActivity {
     ListView alarmList;//список созданных будильников
     ArrayList<Alarm> alarms = new ArrayList<Alarm>();
     AlarmAdapter alarmAdapter;
+    final String LOG_TAG = "LISTVIEW:";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,16 +27,21 @@ public class MainActivity extends AppCompatActivity {
         alarmAdapter = new AlarmAdapter(this, alarms);
         alarmList = (ListView)(findViewById(R.id.alarmList));
         alarmList.setAdapter(alarmAdapter);
-
         alarmList.setClickable(true);
+        //по клику на элементе будильника открываем форму редактирования
         alarmList.setOnItemClickListener(onListItemClick);
     }
 
-    //не работает
+
     OnItemClickListener onListItemClick = new OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            System.out.println("CLICK ITEM");
+            Intent intent = new Intent(MainActivity.this, AlarmEditActivity.class);
+            //передаем объект будильника для редактирования
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("selectedAlarm", alarms.get(position));
+            intent.putExtras(bundle);
+            startActivity(intent);
         }
     };
 

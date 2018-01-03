@@ -2,6 +2,7 @@ package com.alarm.darya.simplealarm;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,15 +25,22 @@ public class AlarmAdapter extends BaseAdapter {
     Context ctx;
     LayoutInflater lInflater;
     BaseAdapter currentAdapter = this;
+    AlertDialog.Builder modal;
 
     ArrayList<Alarm> alarms;
-    int index = 0;
+    int alarmIndexForRemove;
+
 
     AlarmAdapter(Context context, ArrayList<Alarm> alarms) {
         ctx = context;
         this.alarms = alarms;//список будильников
         lInflater = (LayoutInflater) ctx
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        modal = new AlertDialog.Builder(context);
+        modal.setMessage("Вы уверены что хотите удалить этот будильник?");
+        modal.setPositiveButton("ОК", dialogClickListener);
+        modal.setNegativeButton("отмена", dialogClickListener);
     }
 
     @Override
@@ -77,6 +85,11 @@ public class AlarmAdapter extends BaseAdapter {
         return ((Alarm) getItem(position));
     }
 
+    void removeAlarm(int position) {
+        alarms.remove(position);
+        currentAdapter.notifyDataSetChanged();
+    }
+
     OnCheckedChangeListener onStatusChanged = new OnCheckedChangeListener() {
         public void onCheckedChanged(CompoundButton button, boolean isChecked) {
             getAlarm((Integer) button.getTag()).setOn(isChecked);
@@ -85,10 +98,23 @@ public class AlarmAdapter extends BaseAdapter {
 
     View.OnClickListener onDeleteBtnClickListener = new View.OnClickListener() {
         public void onClick(View v) {
-            //диалоговое окно подтверждения удаления
-            alarms.remove((int)(v.getTag()));
-            currentAdapter.notifyDataSetChanged();
+            alarmIndexForRemove = (int)(v.getTag());
+            modal.show();
         }
     };
 
+
+    DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+            switch (which){
+                case DialogInterface.BUTTON_POSITIVE:
+                    removeAlarm(alarmIndexForRemove);
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    dialog.cancel();
+                    break;
+            }
+        }
+    };
 }

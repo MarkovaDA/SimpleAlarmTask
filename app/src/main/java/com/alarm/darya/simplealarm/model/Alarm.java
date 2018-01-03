@@ -1,11 +1,15 @@
 package com.alarm.darya.simplealarm.model;
 
 
-public class Alarm {
+import java.io.Serializable;
+
+public class Alarm implements Serializable{
     String name;
     Integer id;
     Boolean isOn;
-
+    //время
+    //дни недели - enums
+    //тип мелодии
     public Alarm(String name, Integer id, Boolean isOn) {
         this.name = name;
         this.id = id;
