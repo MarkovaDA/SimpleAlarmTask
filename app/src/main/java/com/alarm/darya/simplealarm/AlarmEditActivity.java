@@ -37,7 +37,9 @@ public class AlarmEditActivity extends AppCompatActivity {
         Bundle bundle = intent.getExtras();
         selectedAlarm = (Alarm)bundle.getSerializable("selectedAlarm");
         windowTitle = intent.getStringExtra("action");
+        txtWindowTitle = (TextView)findViewById(R.id.windowTitle);
         txtWindowTitle.setText(windowTitle);
+
         txtAlarmTitle = (EditText)findViewById(R.id.txtAlarmTitle);
         txtAlarmTitle.setText(selectedAlarm.getName());
 
@@ -119,5 +121,10 @@ public class AlarmEditActivity extends AppCompatActivity {
         spinnerSignalType.setAdapter(spinnerAdapter);
         spinnerSignalType.setOnItemSelectedListener(onSpinnerItemSelect);
         spinnerSignalType.setSelection(selectedAlarm.getSignalType().ordinal());
+    }
+
+    void onTimeSelectBtnClicked(View btn) {
+        Intent intent = new Intent(AlarmEditActivity.this, TimeSelectActivity.class);
+        startActivity(intent);
     }
 }
