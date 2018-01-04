@@ -4,12 +4,15 @@ import java.io.Serializable;
 
 
 
-public class Alarm implements Serializable{
+public class Alarm implements Serializable {
+    final int count = 7;
+
     String name;//название будильника
     Integer id;
     Boolean isOn;//включен ли будильник
     SignalType signalType; //тип сигнала будильника
-    Boolean[] daysOfWeek;//дни недели,в которые будильник срабатывает
+    boolean[] daysOfWeek;//дни недели,в которые будильник срабатывает
+
     String schedule; //время срабатывания (преобразовать к необходимому формату)
 
     public Alarm(String name, Integer id, Boolean isOn) {
@@ -17,11 +20,16 @@ public class Alarm implements Serializable{
         this.id = id;
         this.isOn = isOn;
         this.signalType = SignalType.Melody;//default
-        daysOfWeek = new Boolean[7];
+        this.schedule = "Время";
+        daysOfWeek = new boolean[count];
     }
 
     public String getSchedule() {
         return schedule;
+    }
+
+    public boolean[] getDaysOfWeek() {
+        return daysOfWeek;
     }
 
     public SignalType getSignalType() {
