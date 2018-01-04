@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">SimpleAlarm</string>
+    <string name="app_name">Simple alarm</string>
+    <string-array name="signal_type">
+        <item>Melody</item>
+        <item>Vibration</item>
+        <item>Both</item>
+    </string-array>
 </resources>

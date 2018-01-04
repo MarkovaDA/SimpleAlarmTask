@@ -39,23 +39,18 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp">
         <Spinner
-            android:id="@+id/spinner"
+            android:id="@+id/spinnerSignalType"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </TableRow>
-    <TableRow android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp">
-        <TextView
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:text="Время:" />
+            />
     </TableRow>
+
     <TableRow android:layout_marginLeft="10dp">
         <EditText
-            android:id="@+id/editText2"
+            android:id="@+id/txtAlarmTime"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="Время"
             android:inputType="time" />
     </TableRow>
     <TableRow android:layout_marginLeft="10dp"
@@ -71,37 +66,60 @@
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/chMon"
+                android:tag="0"
+                android:onClick="onCheckboxClicked"
                 android:text="Пн" />
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/chTue"
+                android:tag="1"
+                android:onClick="onCheckboxClicked"
                 android:text="Вт" />
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/chWed"
+                android:tag="2"
+                android:onClick="onCheckboxClicked"
                 android:text="Ср" />
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/chThu"
+                android:tag="3"
+                android:onClick="onCheckboxClicked"
                 android:text="Чт" />
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/chFru"
+                android:tag="4"
+                android:onClick="onCheckboxClicked"
                 android:text="Пт" />
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/chSat"
+                android:tag="5"
+                android:onClick="onCheckboxClicked"
                 android:text="Сб" />
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/chSun"
+                android:tag="6"
+                android:onClick="onCheckboxClicked"
                 android:text="Вс" />
         </LinearLayout>
     </TableRow>
 
     <TableRow  android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp">
-        <Button android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="wrap_content"
             android:layout_gravity="right"
             android:text="сохранить"
             />
