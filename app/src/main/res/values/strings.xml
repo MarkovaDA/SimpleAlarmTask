@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Simple alarm</string>
+    <string name="app_name">Будильник</string>
     <string-array name="signal_type">
         <item>Melody</item>
         <item>Vibration</item>

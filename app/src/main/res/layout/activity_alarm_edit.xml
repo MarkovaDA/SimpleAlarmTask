@@ -11,8 +11,9 @@
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
+            android:textSize="20sp"
             android:ems="13"
+            android:textColor="@color/colorAccent"
             android:text="Редактирование будильника"
             />
     </TableRow>
@@ -32,6 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
+            android:textColor="@color/colorPrimary"
             android:text="Тип сигнала:" />
     </TableRow>
 
@@ -44,14 +46,28 @@
             android:layout_height="wrap_content"
             />
     </TableRow>
-
     <TableRow android:layout_marginLeft="10dp">
-        <EditText
-            android:id="@+id/txtAlarmTime"
-            android:layout_width="match_parent"
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Время"
-            android:inputType="time" />
+            android:textSize="18sp"
+            android:textColor="@color/colorPrimary"
+            android:text="Время:"/>
+    </TableRow>
+    <TableRow android:layout_marginLeft="10dp">
+        <LinearLayout android:orientation="horizontal">
+            <EditText
+                android:id="@+id/txtAlarmTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="time"
+                android:layout_weight="2"/>
+            <Button android:id="@+id/btnSetTime"
+                android:layout_width="wrap_content"
+                android:text="..."
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+        </LinearLayout>
     </TableRow>
     <TableRow android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp">
@@ -59,6 +75,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
+            android:textColor="@color/colorPrimary"
             android:text="День недели:" />
     </TableRow>
     <TableRow android:layout_marginLeft="10dp">

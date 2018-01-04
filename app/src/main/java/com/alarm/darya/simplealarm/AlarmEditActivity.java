@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
 import com.alarm.darya.simplealarm.model.Alarm;
 import com.alarm.darya.simplealarm.model.SignalType;
@@ -19,10 +20,11 @@ import com.alarm.darya.simplealarm.model.SignalType;
 public class AlarmEditActivity extends AppCompatActivity {
     EditText txtAlarmTitle;
     EditText txtAlarmTime;
+    TextView txtWindowTitle;
     Spinner spinnerSignalType;
     Button btnSave;
     Alarm selectedAlarm;
-
+    String windowTitle;
 
     CheckBox chbMon, chbTue, chbWed, chbThu, chbFru, chbSat, chbSun;
 
@@ -34,7 +36,8 @@ public class AlarmEditActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         selectedAlarm = (Alarm)bundle.getSerializable("selectedAlarm");
-
+        windowTitle = intent.getStringExtra("action");
+        txtWindowTitle.setText(windowTitle);
         txtAlarmTitle = (EditText)findViewById(R.id.txtAlarmTitle);
         txtAlarmTitle.setText(selectedAlarm.getName());
 
@@ -50,8 +53,9 @@ public class AlarmEditActivity extends AppCompatActivity {
     //действия при нажатии кнопки "сохранить"
     View.OnClickListener onBtnSaveClick = new View.OnClickListener() {
         public void onClick(View v) {
-        if (selectedAlarm == null)
+        if (selectedAlarm == null) {
             return;
+        }
         else {
             selectedAlarm.setName(txtAlarmTitle.getText().toString());
             selectedAlarm.setSchedule(txtAlarmTime.getText().toString());

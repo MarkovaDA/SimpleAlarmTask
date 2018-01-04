@@ -20,7 +20,7 @@ public class Alarm implements Serializable {
         this.id = id;
         this.isOn = isOn;
         this.signalType = SignalType.Melody;//default
-        this.schedule = "Время";
+        this.schedule = "00:00";
         daysOfWeek = new boolean[count];
     }
 
