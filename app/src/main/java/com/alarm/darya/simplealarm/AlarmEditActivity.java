@@ -62,22 +62,22 @@ public class AlarmEditActivity extends AppCompatActivity {
     //действия при нажатии кнопки "сохранить"
     View.OnClickListener onBtnSaveClick = new View.OnClickListener() {
         public void onClick(View v) {
-        if (selectedAlarm == null) {
-            return;
-        }
-        else {
-            selectedAlarm.setName(txtAlarmTitle.getText().toString());
-            //selectedAlarm.setSchedule(txtAlarmTime.getText().toString());
-            selectedAlarm.setTimeHour(parseInt(txtAlarmHour.getText().toString()));
-            selectedAlarm.setTimeMinute(parseInt(txtAlarmMinute.getText().toString()));
+            if (selectedAlarm == null) {
+                return;
+            }
+            else {
+                selectedAlarm.setName(txtAlarmTitle.getText().toString());
+                //selectedAlarm.setSchedule(txtAlarmTime.getText().toString());
+                selectedAlarm.setTimeHour(parseInt(txtAlarmHour.getText().toString()));
+                selectedAlarm.setTimeMinute(parseInt(txtAlarmMinute.getText().toString()));
 
-            Intent currentIntent = getIntent();
-            Bundle bundle = new Bundle();
-            bundle.putSerializable("selectedAlarm", selectedAlarm);
-            currentIntent.putExtras(bundle);
-            setResult(RESULT_OK, currentIntent);
-            finish();
-        }
+                Intent currentIntent = getIntent();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("selectedAlarm", selectedAlarm);
+                currentIntent.putExtras(bundle);
+                setResult(RESULT_OK, currentIntent);
+                finish();
+            }
         }
     };
     //выбор типа мелодии

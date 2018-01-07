@@ -12,6 +12,7 @@
             android:layout_weight="2"
             android:padding="10dp"
             android:textSize="20sp"
+            android:textColor="@color/colorPrimaryDark"
             android:minHeight="?android:attr/listPreferredItemHeight">
         </TextView>
 
@@ -32,4 +33,19 @@
             android:scaleType="centerInside"
             android:text="Удал" />
     </TableRow>
+    <LinearLayout>
+        <TextView
+            android:text="00:00"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/alarmTimeTxt"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:text="Пн, Вт, Ср"
+            android:id="@+id/alarmDaysOfWeeks" />
+    </LinearLayout>
 </TableLayout>

@@ -35,6 +35,9 @@ public class AlarmControlManager {
 
     //запустить будильник
     void setOnAlarm(int index) {
+        if (index >= alarms.size())
+            return;
+
         AlarmEnvironment alarmEnv = alarms.get(index);
         Alarm alarm = alarmEnv.entityAlarm;
         PendingIntent alarmPending = alarmEnv.alarmPendingIntent;
@@ -42,6 +45,9 @@ public class AlarmControlManager {
     }
     //отложить будильник (на 1 мин)
     void delayAlarm(int index) {
+        if (index >= alarms.size())
+            return;
+
         AlarmEnvironment alarmEnv = alarms.get(index);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 SystemClock.elapsedRealtime() + 1 * 60 * 1000, alarmEnv.alarmPendingIntent);
@@ -49,12 +55,18 @@ public class AlarmControlManager {
 
     //отменить будильник
     void cancelAlarm(int index) {
+        if (index >= alarms.size())
+            return;
+
         AlarmEnvironment alarmEnv = alarms.get(index);
         PendingIntent alarmPendingIntent = alarmEnv.alarmPendingIntent;
         alarmManager.cancel(alarmPendingIntent);
     }
 
     void deleteAlarm(int index) {
+        if (index >= alarms.size())
+            return;
+
         cancelAlarm(index);
         alarms.remove(index);
     }

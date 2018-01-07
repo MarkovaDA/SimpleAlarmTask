@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 
 public class AlarmAdapter extends BaseAdapter {
-    Context ctx;
+    Context context;
     LayoutInflater lInflater;
     BaseAdapter currentAdapter = this;
     AlertDialog.Builder modal;
@@ -31,9 +31,9 @@ public class AlarmAdapter extends BaseAdapter {
     Intent messageIntent;
 
     AlarmAdapter(Context context, ArrayList<Alarm> alarms) {
-        ctx = context;
+        this.context = context;
         this.alarms = alarms;//список будильников
-        lInflater = (LayoutInflater) ctx
+        lInflater = (LayoutInflater) this.context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         messageIntent = new Intent(MainActivity.MESSAGE_INTENT_ACTION_TITLE);
@@ -69,7 +69,14 @@ public class AlarmAdapter extends BaseAdapter {
 
         Alarm alarm = getAlarm(position);//текущий отображаемый будильник
 
-        ((TextView)view.findViewById(R.id.alarmName)).setText(alarm.getName());
+        ((TextView)view.findViewById(R.id.alarmName))
+                .setText(alarm.getName());
+
+        ((TextView)view.findViewById(R.id.alarmTimeTxt))
+                .setText(alarmTimeView(alarm.getTimeHour(), alarm.getTimeMinute()));
+
+        ((TextView)view.findViewById(R.id.alarmDaysOfWeeks))
+                .setText(alarmDayOfWeekView(alarm));
 
         CheckBox chStatus = (CheckBox) view.findViewById(R.id.alarmStatus);
         chStatus.setOnCheckedChangeListener(onStatusChanged);
@@ -95,14 +102,25 @@ public class AlarmAdapter extends BaseAdapter {
 
     OnCheckedChangeListener onStatusChanged = new OnCheckedChangeListener() {
         public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-        getAlarm((Integer) button.getTag()).setOn(isChecked);
+            int alarmIndex = (int)button.getTag();
+            getAlarm(alarmIndex).setOn(isChecked);
+            messageIntent.putExtra("alarmIndex", alarmIndex);
+            if (isChecked) {
+                //включить будильник
+                messageIntent.putExtra("ALARM_ACTION", AlarmActionType.ALARM_SET_ON.ordinal());
+            }
+            else {
+                //выключить будильник
+                messageIntent.putExtra("ALARM_ACTION", AlarmActionType.ALARM_SET_OFF.ordinal());
+            }
+            context.sendBroadcast(messageIntent);
         }
     };
 
     View.OnClickListener onDeleteBtnClickListener = new View.OnClickListener() {
         public void onClick(View v) {
-            alarmIndexForRemove = (int)(v.getTag());
-            modal.show();
+        alarmIndexForRemove = (int)(v.getTag());
+        modal.show();
         }
     };
 
@@ -117,12 +135,39 @@ public class AlarmAdapter extends BaseAdapter {
                 messageIntent.putExtra("ALARM_ACTION", AlarmActionType.ALARM_DELETE.ordinal());
                 //передаем индекс удаляемого будильника
                 messageIntent.putExtra("alarmIndex", alarmIndexForRemove);
-                ctx.sendBroadcast(messageIntent);
+                context.sendBroadcast(messageIntent);
                 break;
             case DialogInterface.BUTTON_NEGATIVE:
                 dialog.cancel();
                 break;
-        }
+            }
         }
     };
+
+    String alarmTimeView(int hour, int minute) {
+        String hourView = String.valueOf(hour);
+        String minuteView = String.valueOf(minute);
+        String timeView = "%s:%s";
+
+        if (hour < 10) {
+            hourView = "0" + hour;
+        }
+        if (minute < 10) {
+            minuteView = "0" + minute;
+        }
+        return String.format(timeView, hourView, minuteView);
+    }
+
+    String alarmDayOfWeekView(Alarm alarm) {
+        String days[] = {" Пн", " Вт", " Ср", " Чт", " Пт", " Cб", "Вс"};
+        String result = "";
+        boolean[] week = alarm.getDaysOfWeek();
+
+        for(int i=0; i < week.length; i++) {
+            if (week[i]) {
+                result += days[i];
+            }
+        }
+        return result;
+    }
 }

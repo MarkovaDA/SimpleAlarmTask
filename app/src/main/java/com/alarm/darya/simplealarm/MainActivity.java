@@ -65,14 +65,12 @@ public class MainActivity extends AppCompatActivity {
                 case REQUEST_CODE_ALARM_EDIT:
                     alarms.set(editedAlarm.getId(), editedAlarm);//редактирование будильника
                     alarmAdapter.notifyDataSetChanged();
-
-                    alarmControlManager.createAlarm(editedAlarm);
-                    alarmControlManager.setOnAlarm(editedAlarm.getId());
+                    //alarmControlManager.editAlarm(editedAlarm) - редактировать
                     break;
                 case REQUEST_CODE_ALARM_CREATE:
-                    alarms.add(editedAlarm); //добавление будильника
-                    //обратиться к менеджеру и добавить будильник
+                    alarms.add(editedAlarm);
                     alarmAdapter.notifyDataSetChanged();
+                    alarmControlManager.createAlarm(editedAlarm);
                     break;
             }
         }
@@ -82,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void initAlarms() {
-        for(int i=0; i < 10;i++) {
+        for(int i=0; i < 5; i++) {
             alarms.add(new Alarm("Будильник" + i, i, true));
         }
     }
@@ -100,24 +98,30 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("action", action);
         startActivityForResult(intent, code);
     }
-
+    //регистрируем инициатор событий
     void registerMessageReceiver() {
-        IntentFilter intentFilter =
-                new IntentFilter(MESSAGE_INTENT_ACTION_TITLE);
+        IntentFilter intentFilter = new IntentFilter(MESSAGE_INTENT_ACTION_TITLE);
         messageReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                int alarmAction = intent.getIntExtra("ALARM_ACTION", 0);
-                int alarmIndex = intent.getIntExtra("alarmIndex", -1);
-
+            int alarmAction = intent.getIntExtra("ALARM_ACTION", -1);
+            int alarmIndex = intent.getIntExtra("alarmIndex", -1);
                 //отложить будильник еще на 5 минут
                 if (alarmAction == AlarmActionType.ALARM_DELAY.ordinal()) {
-                    showMessageToast("Будильник отложен на 5 минут!");
                     alarmControlManager.delayAlarm(alarmIndex);
+                    showMessageToast("Будильник отложен на 5 минут!");
                 }
-                else if (alarmAction == AlarmActionType.ALARM_DELETE.ordinal()) {
-                    showMessageToast("Будильник успешно удален!");
+                if (alarmAction == AlarmActionType.ALARM_DELETE.ordinal()) {
                     alarmControlManager.deleteAlarm(alarmIndex);
+                    showMessageToast("Будильник успешно удален!");
+                }
+                if (alarmAction == AlarmActionType.ALARM_SET_ON.ordinal()) {
+                    alarmControlManager.setOnAlarm(alarmIndex);
+                    //showMessageToast("Будильник включен!");
+                }
+                else if (alarmAction == AlarmActionType.ALARM_SET_OFF.ordinal()) {
+                    alarmControlManager.cancelAlarm(alarmIndex);
+                    //showMessageToast("Будильник отключен!");
                 }
             }
         };
@@ -125,6 +129,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void showMessageToast(String message) {
-        Toast.makeText(this, "Будильник отложен на 5 минут", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 }
