@@ -15,11 +15,15 @@ import android.widget.TextView;
 import com.alarm.darya.simplealarm.model.Alarm;
 import com.alarm.darya.simplealarm.model.SignalType;
 
+import static java.lang.Integer.parseInt;
 
 
 public class AlarmEditActivity extends AppCompatActivity {
     EditText txtAlarmTitle;
-    EditText txtAlarmTime;
+
+    EditText txtAlarmHour;
+    EditText txtAlarmMinute;
+
     TextView txtWindowTitle;
     Spinner spinnerSignalType;
     Button btnSave;
@@ -43,8 +47,11 @@ public class AlarmEditActivity extends AppCompatActivity {
         txtAlarmTitle = (EditText)findViewById(R.id.txtAlarmTitle);
         txtAlarmTitle.setText(selectedAlarm.getName());
 
-        txtAlarmTime = (EditText)findViewById(R.id.txtAlarmTime);
-        txtAlarmTime.setText(selectedAlarm.getSchedule());
+        txtAlarmHour = (EditText)findViewById(R.id.txtAlarmHour);
+        txtAlarmHour.setText(String.valueOf(selectedAlarm.getTimeHour()));
+
+        txtAlarmMinute = (EditText)findViewById(R.id.txtAlarmMinute);
+        txtAlarmMinute.setText(String.valueOf(selectedAlarm.getTimeMinute()));
 
         btnSave = (Button)findViewById(R.id.btnSave);
         btnSave.setOnClickListener(onBtnSaveClick);
@@ -60,7 +67,9 @@ public class AlarmEditActivity extends AppCompatActivity {
         }
         else {
             selectedAlarm.setName(txtAlarmTitle.getText().toString());
-            selectedAlarm.setSchedule(txtAlarmTime.getText().toString());
+            //selectedAlarm.setSchedule(txtAlarmTime.getText().toString());
+            selectedAlarm.setTimeHour(parseInt(txtAlarmHour.getText().toString()));
+            selectedAlarm.setTimeMinute(parseInt(txtAlarmMinute.getText().toString()));
 
             Intent currentIntent = getIntent();
             Bundle bundle = new Bundle();
@@ -88,7 +97,7 @@ public class AlarmEditActivity extends AppCompatActivity {
         CheckBox chbDayOfWeek = (CheckBox)view;
         boolean checked = chbDayOfWeek.isChecked();
         Object tag = chbDayOfWeek.getTag();
-        int number = Integer.parseInt(tag.toString());
+        int number = parseInt(tag.toString());
         selectedAlarm.setDayOfWeek(number, checked);
     }
 

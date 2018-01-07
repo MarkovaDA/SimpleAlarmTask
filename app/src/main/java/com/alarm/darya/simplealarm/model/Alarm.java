@@ -1,5 +1,7 @@
 package com.alarm.darya.simplealarm.model;
 
+import android.net.Uri;
+
 import java.io.Serializable;
 
 
@@ -11,21 +13,38 @@ public class Alarm implements Serializable {
     Integer id;
     Boolean isOn;//включен ли будильник
     SignalType signalType; //тип сигнала будильника
+
+    Uri AlarmTone;
+
+    int timeHour; //час срабатывания
+    int timeMinute; //время срабатывания
+
     boolean[] daysOfWeek;//дни недели,в которые будильник срабатывает
 
-    String schedule; //время срабатывания (преобразовать к необходимому формату)
+    public int getTimeHour() {
+        return timeHour;
+    }
+
+    public void setTimeHour(int timeHour) {
+        this.timeHour = timeHour;
+    }
+
+    public int getTimeMinute() {
+        return timeMinute;
+    }
+
+    public void setTimeMinute(int timeMinute) {
+        this.timeMinute = timeMinute;
+    }
 
     public Alarm(String name, Integer id, Boolean isOn) {
         this.name = name;
         this.id = id;
         this.isOn = isOn;
         this.signalType = SignalType.Melody;//default
-        this.schedule = "00:00";
+        this.timeHour = 0;
+        this.timeMinute = 0;
         daysOfWeek = new boolean[count];
-    }
-
-    public String getSchedule() {
-        return schedule;
     }
 
     public boolean[] getDaysOfWeek() {
@@ -34,10 +53,6 @@ public class Alarm implements Serializable {
 
     public SignalType getSignalType() {
         return signalType;
-    }
-
-    public void setSchedule(String schedule) {
-        this.schedule = schedule;
     }
 
     public void setSignalType(SignalType signalType) {

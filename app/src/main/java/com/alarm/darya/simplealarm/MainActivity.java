@@ -1,6 +1,9 @@
 package com.alarm.darya.simplealarm;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -17,21 +20,32 @@ public class MainActivity extends AppCompatActivity {
     final int REQUEST_CODE_ALARM_EDIT = 1;
     final int REQUEST_CODE_ALARM_CREATE = 2;
 
+    final static String MESSAGE_INTENT_ACTION_TITLE =
+            "com.alarm.darya.simplealarm.ALARM_ACTION";
+
     ListView alarmList;
     ArrayList<Alarm> alarms = new ArrayList<Alarm>();
     AlarmAdapter alarmAdapter;
+
+    AlarmControlManager alarmControlManager;
+    BroadcastReceiver messageReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         initAlarms();
+        registerMessageReceiver();
+
         alarmAdapter = new AlarmAdapter(this, alarms);
         alarmList = (ListView)(findViewById(R.id.alarmList));
         alarmList.setAdapter(alarmAdapter);
         alarmList.setClickable(true);
         //по клику на элементе будильника открываем форму редактирования
         alarmList.setOnItemClickListener(onListItemClick);
+
+        alarmControlManager = new AlarmControlManager(this);
     }
 
 
@@ -51,9 +65,13 @@ public class MainActivity extends AppCompatActivity {
                 case REQUEST_CODE_ALARM_EDIT:
                     alarms.set(editedAlarm.getId(), editedAlarm);//редактирование будильника
                     alarmAdapter.notifyDataSetChanged();
+
+                    alarmControlManager.createAlarm(editedAlarm);
+                    alarmControlManager.setOnAlarm(editedAlarm.getId());
                     break;
                 case REQUEST_CODE_ALARM_CREATE:
                     alarms.add(editedAlarm); //добавление будильника
+                    //обратиться к менеджеру и добавить будильник
                     alarmAdapter.notifyDataSetChanged();
                     break;
             }
@@ -81,5 +99,32 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtras(bundle);
         intent.putExtra("action", action);
         startActivityForResult(intent, code);
+    }
+
+    void registerMessageReceiver() {
+        IntentFilter intentFilter =
+                new IntentFilter(MESSAGE_INTENT_ACTION_TITLE);
+        messageReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                int alarmAction = intent.getIntExtra("ALARM_ACTION", 0);
+                int alarmIndex = intent.getIntExtra("alarmIndex", -1);
+
+                //отложить будильник еще на 5 минут
+                if (alarmAction == AlarmActionType.ALARM_DELAY.ordinal()) {
+                    showMessageToast("Будильник отложен на 5 минут!");
+                    alarmControlManager.delayAlarm(alarmIndex);
+                }
+                else if (alarmAction == AlarmActionType.ALARM_DELETE.ordinal()) {
+                    showMessageToast("Будильник успешно удален!");
+                    alarmControlManager.deleteAlarm(alarmIndex);
+                }
+            }
+        };
+        registerReceiver(messageReceiver, intentFilter);
+    }
+
+    void showMessageToast(String message) {
+        Toast.makeText(this, "Будильник отложен на 5 минут", Toast.LENGTH_SHORT).show();
     }
 }

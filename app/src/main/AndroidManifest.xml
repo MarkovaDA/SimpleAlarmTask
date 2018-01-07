@@ -17,7 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".AlarmEditActivity" />
-        <activity android:name=".TimeSelectActivity"></activity>
+        <activity android:name=".TimeSelectActivity" />
+        <activity android:name=".AlarmScreenActivity"></activity>
     </application>
 
 </manifest>

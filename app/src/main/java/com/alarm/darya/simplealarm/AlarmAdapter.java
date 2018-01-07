@@ -3,6 +3,7 @@ package com.alarm.darya.simplealarm;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,9 +18,6 @@ import com.alarm.darya.simplealarm.model.Alarm;
 
 import java.util.ArrayList;
 
-/**
- * Created by Darya on 02.01.2018.
- */
 
 public class AlarmAdapter extends BaseAdapter {
     Context ctx;
@@ -30,12 +28,15 @@ public class AlarmAdapter extends BaseAdapter {
     ArrayList<Alarm> alarms;
     int alarmIndexForRemove;
 
+    Intent messageIntent;
 
     AlarmAdapter(Context context, ArrayList<Alarm> alarms) {
         ctx = context;
         this.alarms = alarms;//список будильников
         lInflater = (LayoutInflater) ctx
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        messageIntent = new Intent(MainActivity.MESSAGE_INTENT_ACTION_TITLE);
 
         modal = new AlertDialog.Builder(context);
         modal.setMessage("Вы уверены что хотите удалить этот будильник?");
@@ -61,6 +62,7 @@ public class AlarmAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
+
         if (view == null) {
             view = lInflater.inflate(R.layout.list_item, parent, false);
         }
@@ -87,12 +89,13 @@ public class AlarmAdapter extends BaseAdapter {
 
     void removeAlarm(int position) {
         alarms.remove(position);
+        //отправить сигнал о том, что будильник удален
         currentAdapter.notifyDataSetChanged();
     }
 
     OnCheckedChangeListener onStatusChanged = new OnCheckedChangeListener() {
         public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-            getAlarm((Integer) button.getTag()).setOn(isChecked);
+        getAlarm((Integer) button.getTag()).setOn(isChecked);
         }
     };
 
@@ -107,14 +110,19 @@ public class AlarmAdapter extends BaseAdapter {
     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
-            switch (which){
-                case DialogInterface.BUTTON_POSITIVE:
-                    removeAlarm(alarmIndexForRemove);
-                    break;
-                case DialogInterface.BUTTON_NEGATIVE:
-                    dialog.cancel();
-                    break;
-            }
+        switch (which){
+            case DialogInterface.BUTTON_POSITIVE:
+                removeAlarm(alarmIndexForRemove);
+                //оповещаем MainActivity о запросе удаления будильника
+                messageIntent.putExtra("ALARM_ACTION", AlarmActionType.ALARM_DELETE.ordinal());
+                //передаем индекс удаляемого будильника
+                messageIntent.putExtra("alarmIndex", alarmIndexForRemove);
+                ctx.sendBroadcast(messageIntent);
+                break;
+            case DialogInterface.BUTTON_NEGATIVE:
+                dialog.cancel();
+                break;
+        }
         }
     };
 }
