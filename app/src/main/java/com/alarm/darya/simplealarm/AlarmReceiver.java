@@ -7,21 +7,49 @@ import android.os.Bundle;
 
 import com.alarm.darya.simplealarm.model.Alarm;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectInputStream;
+
 
 public class AlarmReceiver extends BroadcastReceiver {
     static Intent alarmScreenTask;
+    Alarm runningAlarm;
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Bundle bundle = intent.getExtras();
-        Alarm runningAlarm = (Alarm)bundle.getSerializable("alarm");
-        //получить день недели
+        readAlarmRunningData(intent);
+
         if (alarmScreenTask == null)
             alarmScreenTask = new Intent(context, AlarmScreenActivity.class);
 
-        bundle = new Bundle();
-        bundle.putSerializable("alarm", runningAlarm);
-        alarmScreenTask.putExtras(bundle);
-        context.startActivity(alarmScreenTask);
+        if (runningAlarm != null) {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("alarm", runningAlarm);
+            alarmScreenTask.putExtras(bundle);
+            context.startActivity(alarmScreenTask);
+        }
+    }
+
+    void readAlarmRunningData(Intent intent) {
+        ByteArrayInputStream bis = new ByteArrayInputStream(intent.getByteArrayExtra("alarm"));
+        ObjectInput in = null;
+        try {
+            in = new ObjectInputStream(bis);
+            this.runningAlarm = (Alarm)in.readObject();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 }
