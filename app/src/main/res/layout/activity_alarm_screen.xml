@@ -28,7 +28,7 @@
             android:id="@+id/button3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:onClick="onClickBtnWakeUp"
+            android:onClick="onClickBtnDelay"
             android:layout_weight="1"
             android:text="Дремать 5 мин" />
 
@@ -37,7 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:onClick="onClickBtnDelay"
+            android:onClick="onClickBtnWakeUp"
             android:text="Проснуться" />
     </LinearLayout>
 </LinearLayout>

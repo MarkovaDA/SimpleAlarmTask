@@ -35,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initAlarms();
+        //initAlarms();
+
         registerMessageReceiver();
 
         alarmAdapter = new AlarmAdapter(this, alarms);
@@ -44,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
         alarmList.setClickable(true);
         //по клику на элементе будильника открываем форму редактирования
         alarmList.setOnItemClickListener(onListItemClick);
-
         alarmControlManager = new AlarmControlManager(this);
     }
 
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
     OnItemClickListener onListItemClick = new OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            startEditAddActivity(REQUEST_CODE_ALARM_EDIT, alarms.get(position), "Редактирование будильника");
+        startEditAddActivity(REQUEST_CODE_ALARM_EDIT, alarms.get(position), "Редактирование будильника");
         }
     };
 
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 case REQUEST_CODE_ALARM_CREATE:
                     alarms.add(editedAlarm);
                     alarmAdapter.notifyDataSetChanged();
-                    alarmControlManager.createAlarm(editedAlarm);
+                    alarmControlManager.addAlarm(editedAlarm);
                     break;
             }
         }
@@ -81,13 +81,13 @@ public class MainActivity extends AppCompatActivity {
 
     void initAlarms() {
         for(int i=0; i < 5; i++) {
-            alarms.add(new Alarm("Будильник" + i, i, true));
+            alarms.add(new Alarm("Будильник " + i, i, true));
         }
     }
 
     void onBtnAddClicked(View button) {
         startEditAddActivity(REQUEST_CODE_ALARM_CREATE,
-                new Alarm("Будильник" + alarms.size(), alarms.size(), false), "Создание будильника");
+         new Alarm("Будильник " + alarms.size(), alarms.size(), false), "Создание будильника");
     }
 
     void startEditAddActivity(int code, Alarm entity, String action) {
@@ -106,23 +106,23 @@ public class MainActivity extends AppCompatActivity {
             public void onReceive(Context context, Intent intent) {
             int alarmAction = intent.getIntExtra("ALARM_ACTION", -1);
             int alarmIndex = intent.getIntExtra("alarmIndex", -1);
-                //отложить будильник еще на 5 минут
-                if (alarmAction == AlarmActionType.ALARM_DELAY.ordinal()) {
-                    alarmControlManager.delayAlarm(alarmIndex);
-                    showMessageToast("Будильник отложен на 5 минут!");
-                }
-                if (alarmAction == AlarmActionType.ALARM_DELETE.ordinal()) {
-                    alarmControlManager.deleteAlarm(alarmIndex);
-                    showMessageToast("Будильник успешно удален!");
-                }
-                if (alarmAction == AlarmActionType.ALARM_SET_ON.ordinal()) {
-                    alarmControlManager.setOnAlarm(alarmIndex);
-                    //showMessageToast("Будильник включен!");
-                }
-                else if (alarmAction == AlarmActionType.ALARM_SET_OFF.ordinal()) {
-                    alarmControlManager.cancelAlarm(alarmIndex);
-                    //showMessageToast("Будильник отключен!");
-                }
+            //отложить будильник еще на 5 минут
+            if (alarmAction == AlarmActionType.ALARM_DELAY.ordinal()) {
+                alarmControlManager.delayAlarm(alarmIndex);
+                showMessageToast("Будильник отложен на 5 минут!");
+            }
+            if (alarmAction == AlarmActionType.ALARM_DELETE.ordinal()) {
+                alarmControlManager.deleteAlarm(alarmIndex);
+                showMessageToast("Будильник успешно удален!");
+            }
+            if (alarmAction == AlarmActionType.ALARM_SET_ON.ordinal()) {
+                alarmControlManager.setOnAlarm(alarmIndex);
+                showMessageToast("Будильник включен!");
+            }
+            else if (alarmAction == AlarmActionType.ALARM_SET_OFF.ordinal()) {
+                alarmControlManager.cancelAlarm(alarmIndex);
+                showMessageToast("Будильник отключен!");
+            }
             }
         };
         registerReceiver(messageReceiver, intentFilter);

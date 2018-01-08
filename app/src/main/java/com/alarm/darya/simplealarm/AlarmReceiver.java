@@ -15,7 +15,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         Bundle bundle = intent.getExtras();
         Alarm runningAlarm = (Alarm)bundle.getSerializable("alarm");
-
+        //получить день недели
         if (alarmScreenTask == null)
             alarmScreenTask = new Intent(context, AlarmScreenActivity.class);
 

@@ -32,6 +32,7 @@ public class AlarmScreenActivity extends AppCompatActivity {
     }
 
     void onClickBtnDelay(View btn) {
+        //отправить alarmIndex извлечь информацию из Bundle activity
         messageIntent.putExtra("ALARM_ACTION", AlarmActionType.ALARM_DELAY);
         stopService(serviceIntent);
         sendBroadcast(messageIntent);

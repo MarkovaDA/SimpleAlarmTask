@@ -11,12 +11,11 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.alarm.darya.simplealarm.model.Alarm;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 
 public class AlarmAdapter extends BaseAdapter {
@@ -79,7 +78,9 @@ public class AlarmAdapter extends BaseAdapter {
                 .setText(alarmDayOfWeekView(alarm));
 
         CheckBox chStatus = (CheckBox) view.findViewById(R.id.alarmStatus);
-        chStatus.setOnCheckedChangeListener(onStatusChanged);
+
+        chStatus.setOnClickListener(onStatusChanged);
+
         chStatus.setTag(position);
         chStatus.setChecked(alarm.getOn());
 
@@ -96,13 +97,25 @@ public class AlarmAdapter extends BaseAdapter {
 
     void removeAlarm(int position) {
         alarms.remove(position);
-        //отправить сигнал о том, что будильник удален
+        //пересчет индексов
+        updateIds();
+        //обновление отображения
         currentAdapter.notifyDataSetChanged();
     }
 
-    OnCheckedChangeListener onStatusChanged = new OnCheckedChangeListener() {
-        public void onCheckedChanged(CompoundButton button, boolean isChecked) {
-            int alarmIndex = (int)button.getTag();
+    void updateIds() {
+        int start = 0;
+
+       for (Alarm alarm : alarms) {
+           alarm.setId(start++);
+       }
+    }
+
+    View.OnClickListener onStatusChanged = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            boolean isChecked = ((CheckBox)v).isChecked();
+            int alarmIndex = (int)v.getTag();
             getAlarm(alarmIndex).setOn(isChecked);
             messageIntent.putExtra("alarmIndex", alarmIndex);
             if (isChecked) {
@@ -119,8 +132,8 @@ public class AlarmAdapter extends BaseAdapter {
 
     View.OnClickListener onDeleteBtnClickListener = new View.OnClickListener() {
         public void onClick(View v) {
-        alarmIndexForRemove = (int)(v.getTag());
-        modal.show();
+            alarmIndexForRemove = (int)(v.getTag());
+            modal.show();
         }
     };
 
@@ -159,7 +172,7 @@ public class AlarmAdapter extends BaseAdapter {
     }
 
     String alarmDayOfWeekView(Alarm alarm) {
-        String days[] = {" Пн", " Вт", " Ср", " Чт", " Пт", " Cб", "Вс"};
+        String days[] = {" Пн", " Вт", " Ср", " Чт", " Пт", " Cб", " Вс"};
         String result = "";
         boolean[] week = alarm.getDaysOfWeek();
 

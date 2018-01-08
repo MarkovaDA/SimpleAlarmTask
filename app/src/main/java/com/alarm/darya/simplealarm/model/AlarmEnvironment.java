@@ -13,14 +13,29 @@ public class AlarmEnvironment {
     public PendingIntent alarmPendingIntent;
     public Alarm entityAlarm;
 
+    private int intentId;
+    private Context context;
+
     public AlarmEnvironment(Context context, Alarm alarm) {
         entityAlarm = alarm;
         alarmIntent = new Intent(context, AlarmReceiver.class);
+        this.context = context;
 
         Bundle extras = new Bundle();
         extras.putSerializable("alarm", alarm);
         alarmIntent.putExtras(extras);
 
-        alarmPendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        intentId = (int)System.currentTimeMillis();
+
+        alarmPendingIntent = PendingIntent
+                .getBroadcast(context, intentId, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    public PendingIntent getAlarmPendingIntent() {
+        intentId = (int)System.currentTimeMillis();
+
+        alarmPendingIntent = PendingIntent
+                .getBroadcast(context, intentId, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return alarmPendingIntent;
     }
 }
