@@ -117,12 +117,17 @@ public class Alarm implements Serializable {
         }
         return result;
     }
-
-    public boolean isEveryDay() {
+    //звонить каждый день?
+    private boolean isEveryDay() {
         for(boolean day: daysOfWeek) {
             if (day)
                 return false;
         }
+        return true;
+    }
+
+    //звонить сегодня?
+    public boolean isRunningAlarmDayNow() {
         return true;
     }
 }
