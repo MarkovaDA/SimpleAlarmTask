@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.alarm.darya.simplealarm.model.Alarm;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
     final int REQUEST_CODE_ALARM_EDIT = 1;
@@ -34,9 +35,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         //initAlarms();
-
         registerMessageReceiver();
 
         alarmAdapter = new AlarmAdapter(this, alarms);

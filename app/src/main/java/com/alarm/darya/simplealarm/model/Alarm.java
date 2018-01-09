@@ -106,7 +106,7 @@ public class Alarm implements Serializable {
     }
 
     public String getDayOfWeekView() {
-        String days[] = {" Пн", " Вт", " Ср", " Чт", " Пт", " Cб", " Вс"};
+        String days[] = {" Пн", " Вт", " Ср", " Чт", " Пт", " Cб", " Вс",};
         String result = "";
         boolean[] week = this.getDaysOfWeek();
 
@@ -116,5 +116,13 @@ public class Alarm implements Serializable {
             }
         }
         return result;
+    }
+
+    public boolean isEveryDay() {
+        for(boolean day: daysOfWeek) {
+            if (day)
+                return false;
+        }
+        return true;
     }
 }
