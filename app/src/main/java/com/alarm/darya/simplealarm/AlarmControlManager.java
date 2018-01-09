@@ -86,7 +86,8 @@ public class AlarmControlManager {
         alarmEnv.writeAlarmDataToIntent();
         //если будильник был включен, включаем его согласно новому раписанию
         if (alarm.getOn()) {
-            setOnAlarm(alarm.getId());
+            cancelAlarm(alarm.getId()); //отменяем старое расписание
+            setOnAlarm(alarm.getId()); //возобнавляем новое
         }
         //перезаписть информацию в intent
     }
