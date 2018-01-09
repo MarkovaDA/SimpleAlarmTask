@@ -36,7 +36,7 @@ public class AlarmControlManagerTest  {
         //добавление тестового будильника
         Alarm alarm = new Alarm("Test alarm", index, false);
         alarmControlManager.addAlarm(alarm);
-        assertEquals(alarmControlManager.getAlarmByIndex(index).entityAlarm, alarm);
+        assertEquals(alarmControlManager.getAlarmByIndex(index).getEntityAlarm(), alarm);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class AlarmControlManagerTest  {
             .getBroadcast(
                 appContext,
                 0,
-                alarmEnvironment.alarmIntent,
+                alarmEnvironment.getAlarmIntent(),
                 PendingIntent.FLAG_NO_CREATE) !=  null
             );
     }

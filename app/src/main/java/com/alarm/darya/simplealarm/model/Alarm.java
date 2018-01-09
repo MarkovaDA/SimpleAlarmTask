@@ -86,4 +86,35 @@ public class Alarm implements Serializable {
     public void setDayOfWeek(int index, boolean status) {
         this.daysOfWeek[index] = status;
     }
+
+    //строковое представление времени
+    public String getTimeView() {
+        String timeFormat = "%s:%s";
+        String hourView = String.valueOf(this.timeHour);
+        String minuteView = String.valueOf(this.timeMinute);
+
+        if (this.timeHour < 10) {
+            hourView = "0" + hourView;
+
+        }
+
+        if (this.timeMinute < 10) {
+            minuteView = "0" + minuteView;
+        }
+
+        return String.format(timeFormat, hourView, minuteView);
+    }
+
+    public String getDayOfWeekView() {
+        String days[] = {" Пн", " Вт", " Ср", " Чт", " Пт", " Cб", " Вс"};
+        String result = "";
+        boolean[] week = this.getDaysOfWeek();
+
+        for(int i=0; i < week.length; i++) {
+            if (week[i]) {
+                result += days[i];
+            }
+        }
+        return result;
+    }
 }

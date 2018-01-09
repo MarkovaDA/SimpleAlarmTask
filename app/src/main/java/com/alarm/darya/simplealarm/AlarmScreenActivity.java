@@ -28,7 +28,7 @@ public class AlarmScreenActivity extends AppCompatActivity {
         txtAlarmTime = (TextView)findViewById(R.id.txtAlarmTime);
 
         txtAlarmTitle.setText(runningAlarm.getName());
-        txtAlarmTime.setText(timeView(runningAlarm));
+        txtAlarmTime.setText(runningAlarm.getTimeView());
 
         serviceIntent = new Intent(this, RingtonPlayingService.class);
         messageIntent = new Intent(MainActivity.MESSAGE_INTENT_ACTION_TITLE);
@@ -46,10 +46,5 @@ public class AlarmScreenActivity extends AppCompatActivity {
         stopService(serviceIntent);
         sendBroadcast(messageIntent);
         finish();
-    }
-
-    String timeView(Alarm alarm) {
-        String timeFormat = "%d:%d";
-        return String.format(timeFormat, alarm.getTimeHour(), alarm.getTimeMinute());
     }
 }

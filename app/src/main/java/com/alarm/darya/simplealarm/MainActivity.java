@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 case REQUEST_CODE_ALARM_EDIT:
                     alarms.set(editedAlarm.getId(), editedAlarm);//редактирование будильника
                     alarmAdapter.notifyDataSetChanged();
-                    //alarmControlManager.editAlarm(editedAlarm) - редактировать
+                    alarmControlManager.editAlarm(editedAlarm);
                     break;
                 case REQUEST_CODE_ALARM_CREATE:
                     alarms.add(editedAlarm);

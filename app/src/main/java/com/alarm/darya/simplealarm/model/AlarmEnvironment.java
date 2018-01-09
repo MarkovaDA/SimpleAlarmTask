@@ -4,7 +4,7 @@ package com.alarm.darya.simplealarm.model;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
+
 import com.alarm.darya.simplealarm.AlarmReceiver;
 
 import java.io.ByteArrayOutputStream;
@@ -13,9 +13,9 @@ import java.io.ObjectOutputStream;
 
 
 public class AlarmEnvironment {
-    public Intent alarmIntent;
-    public PendingIntent alarmPendingIntent;
-    public Alarm entityAlarm;
+    Intent alarmIntent;
+    PendingIntent alarmPendingIntent;
+    Alarm entityAlarm;
 
     private int intentId;
     private Context context;
@@ -25,25 +25,41 @@ public class AlarmEnvironment {
         alarmIntent = new Intent(context, AlarmReceiver.class);
         this.context = context;
 
-        /*Bundle extras = new Bundle();
-        extras.putSerializable("alarm", alarm);
-        alarmIntent.putExtras(extras);*/
-        writeAlarmData();
+        writeAlarmDataToIntent();
         intentId = (int)System.currentTimeMillis();
 
         alarmPendingIntent = PendingIntent
                 .getBroadcast(context, intentId, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    public PendingIntent getAlarmPendingIntent() {
+    public PendingIntent getAlarmNewPendingIntent() {
         intentId = (int)System.currentTimeMillis();
-
         alarmPendingIntent = PendingIntent
                 .getBroadcast(context, intentId, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         return alarmPendingIntent;
     }
 
-    void writeAlarmData() {
+    public PendingIntent getCurrentPendingIntent() {
+        return alarmPendingIntent;
+    }
+
+    public Intent getAlarmIntent() {
+        return alarmIntent;
+    }
+
+    public Alarm getEntityAlarm() {
+        return entityAlarm;
+    }
+
+    public void setEntityAlarm(Alarm entityAlarm) {
+        this.entityAlarm = entityAlarm;
+    }
+
+    public void setAlarmIntent(Intent alarmIntent) {
+        this.alarmIntent = alarmIntent;
+    }
+    //метод записи в интенет должен вызываться и при каждом обновлении/редактировании будильника
+    public void writeAlarmDataToIntent() {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         ObjectOutputStream out = null;
         try {
@@ -51,7 +67,7 @@ public class AlarmEnvironment {
             out.writeObject(entityAlarm);
             out.flush();
             byte[] data = bos.toByteArray();
-            alarmIntent.putExtra("alarm", data);
+            this.alarmIntent.putExtra("alarm", data);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

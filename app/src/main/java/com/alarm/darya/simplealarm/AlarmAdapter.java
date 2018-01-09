@@ -13,9 +13,7 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.alarm.darya.simplealarm.model.Alarm;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 
 
 public class AlarmAdapter extends BaseAdapter {
@@ -72,12 +70,12 @@ public class AlarmAdapter extends BaseAdapter {
                 .setText(alarm.getName());
 
         ((TextView)view.findViewById(R.id.alarmTimeTxt))
-                .setText(alarmTimeView(alarm.getTimeHour(), alarm.getTimeMinute()));
+                .setText(alarm.getTimeView());
 
         ((TextView)view.findViewById(R.id.alarmDaysOfWeeks))
-                .setText(alarmDayOfWeekView(alarm));
+                .setText(alarm.getDayOfWeekView());
 
-        CheckBox chStatus = (CheckBox) view.findViewById(R.id.alarmStatus);
+        CheckBox chStatus = (CheckBox)view.findViewById(R.id.alarmStatus);
 
         chStatus.setOnClickListener(onStatusChanged);
 
@@ -157,30 +155,4 @@ public class AlarmAdapter extends BaseAdapter {
         }
     };
 
-    String alarmTimeView(int hour, int minute) {
-        String hourView = String.valueOf(hour);
-        String minuteView = String.valueOf(minute);
-        String timeView = "%s:%s";
-
-        if (hour < 10) {
-            hourView = "0" + hour;
-        }
-        if (minute < 10) {
-            minuteView = "0" + minute;
-        }
-        return String.format(timeView, hourView, minuteView);
-    }
-
-    String alarmDayOfWeekView(Alarm alarm) {
-        String days[] = {" Пн", " Вт", " Ср", " Чт", " Пт", " Cб", " Вс"};
-        String result = "";
-        boolean[] week = alarm.getDaysOfWeek();
-
-        for(int i=0; i < week.length; i++) {
-            if (week[i]) {
-                result += days[i];
-            }
-        }
-        return result;
-    }
 }

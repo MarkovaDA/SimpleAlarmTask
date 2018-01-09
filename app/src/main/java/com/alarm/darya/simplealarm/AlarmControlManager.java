@@ -41,8 +41,8 @@ public class AlarmControlManager {
             return;
 
         AlarmEnvironment alarmEnv = alarms.get(index);
-        Alarm alarm = alarmEnv.entityAlarm;
-        PendingIntent alarmPending = alarmEnv.alarmPendingIntent;
+        Alarm alarm = alarmEnv.getEntityAlarm();
+        PendingIntent alarmPending = alarmEnv.getAlarmNewPendingIntent();
         alarmManager.setExact(AlarmManager.RTC_WAKEUP,
                 getSchedule(alarm),
                 alarmPending);
@@ -55,7 +55,7 @@ public class AlarmControlManager {
             return;
         AlarmEnvironment alarmEnv = alarms.get(index);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                SystemClock.elapsedRealtime() + 1 * 60 * 1000, alarmEnv.getAlarmPendingIntent());
+                SystemClock.elapsedRealtime() + 1 * 60 * 1000, alarmEnv.getAlarmNewPendingIntent());
     }
 
     //отменить будильник
@@ -64,7 +64,8 @@ public class AlarmControlManager {
             return;
 
         AlarmEnvironment alarmEnv = alarms.get(index);
-        PendingIntent alarmPendingIntent = alarmEnv.alarmPendingIntent;
+        PendingIntent alarmPendingIntent =
+                alarmEnv.getCurrentPendingIntent();
         alarmManager.cancel(alarmPendingIntent);
     }
 
@@ -76,8 +77,18 @@ public class AlarmControlManager {
         alarms.remove(index);
     }
 
-    void editAlarm(int index) {
-        //перезапуск будильника?
+    //редактировать будильник по индексу index
+    void editAlarm(Alarm alarm) {
+        AlarmEnvironment alarmEnv = alarms.get(alarm.getId());
+        alarms.get(alarm.getId())
+                .setEntityAlarm(alarm);
+        //перезаписываем данные в интент (это не помогает)
+        alarmEnv.writeAlarmDataToIntent();
+        //если будильник был включен, включаем его согласно новому раписанию
+        if (alarm.getOn()) {
+            setOnAlarm(alarm.getId());
+        }
+        //перезаписть информацию в intent
     }
 
     AlarmEnvironment getAlarmByIndex(int index) {
