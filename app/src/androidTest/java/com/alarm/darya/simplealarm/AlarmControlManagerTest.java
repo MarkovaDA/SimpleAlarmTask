@@ -6,7 +6,7 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.alarm.darya.simplealarm.model.Alarm;
-import com.alarm.darya.simplealarm.model.AlarmEnvironment;
+import com.alarm.darya.simplealarm.model.AlarmService;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -32,37 +32,32 @@ public class AlarmControlManagerTest  {
 
     @Test
     public void addAlarmTest() throws Exception {
-        int index = 0;
-        //добавление тестового будильника
-        Alarm alarm = new Alarm("Test alarm", index, false);
+        Alarm alarm = new Alarm("Test alarm", 1);
         alarmControlManager.addAlarm(alarm);
-        assertEquals(alarmControlManager.getAlarmByIndex(index).getEntityAlarm(), alarm);
+        assertEquals(alarmControlManager
+                .getLastAddedAlarm().getEntityAlarm(), alarm);
     }
 
     @Test
     public void setOnAlarmTest() throws Exception {
-        //добавление будильника
-        int index = 0;
-        Alarm alarm = new Alarm("Test alarm", index, false);
-        alarmControlManager.addAlarm(alarm);
-        alarmControlManager.setOnAlarm(index);
-        //извлекаем entity добавленного будильника
-        AlarmEnvironment alarmEnvironment = alarmControlManager.getAlarmByIndex(index);
-        //проверяем, что служба будильника запущена
-        assertTrue(PendingIntent
+        Alarm alarm =
+                new Alarm("Test alarm", 1);
+        //alarm.setTimeHour(12);
+        //alarm.setTimeMinute(24);
+        alarmControlManager.addAlarm(alarm);//добавляем будильник
+        alarmControlManager.setOnAlarm(alarm);//включаем только что добавленный будильник
+
+       assertTrue(PendingIntent
             .getBroadcast(
                 appContext,
                 0,
-                alarmEnvironment.getAlarmIntent(),
+                alarmControlManager.getLastAddedAlarm().getAlarmIntent(),
                 PendingIntent.FLAG_NO_CREATE) !=  null
             );
     }
 
     @Test
     public void editAlarmTest() throws Exception {
-        //Alarm alarm1
-        //добавить будильник
-        //Извлечь добавленный будильник
-        //Изменить параметры, добавить новый
+
     }
 }

@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 
 
-public class AlarmEnvironment {
+public class AlarmService {
     Intent alarmIntent;
     PendingIntent alarmPendingIntent;
     Alarm entityAlarm;
@@ -20,22 +20,35 @@ public class AlarmEnvironment {
     private int intentId;
     private Context context;
 
-    public AlarmEnvironment(Context context, Alarm alarm) {
+    public AlarmService(Context ctx, Alarm alarm) {
+
+        if (!isAlarmValid(alarm))
+            return;
+
+        context = ctx;
         entityAlarm = alarm;
-        alarmIntent = new Intent(context, AlarmReceiver.class);
-        this.context = context;
+        alarmIntent =
+                new Intent(context, AlarmReceiver.class);
 
         writeAlarmDataToIntent();
+
         intentId = (int)System.currentTimeMillis();
 
         alarmPendingIntent = PendingIntent
                 .getBroadcast(context, intentId, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
+    private boolean isAlarmValid(Alarm alarm) {
+        return (alarm.id == null || alarm.name == null || alarm.name != "");
+    }
+
     public PendingIntent getAlarmNewPendingIntent() {
         intentId = (int)System.currentTimeMillis();
         alarmPendingIntent = PendingIntent
-                .getBroadcast(context, intentId, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                .getBroadcast(context,
+                        intentId,
+                        alarmIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT);
         return alarmPendingIntent;
     }
 
@@ -58,6 +71,7 @@ public class AlarmEnvironment {
     public void setAlarmIntent(Intent alarmIntent) {
         this.alarmIntent = alarmIntent;
     }
+
     //метод записи в интенет должен вызываться и при каждом обновлении/редактировании будильника
     public void writeAlarmDataToIntent() {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();

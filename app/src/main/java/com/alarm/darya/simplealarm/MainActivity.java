@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.alarm.darya.simplealarm.model.Alarm;
 
 import java.util.ArrayList;
-import java.util.Calendar;
+
 
 public class MainActivity extends AppCompatActivity {
     final int REQUEST_CODE_ALARM_EDIT = 1;
@@ -80,13 +80,13 @@ public class MainActivity extends AppCompatActivity {
 
     void initAlarms() {
         for(int i=0; i < 5; i++) {
-            alarms.add(new Alarm("Будильник " + i, i, true));
+            alarms.add(new Alarm("Будильник " + i, i));
         }
     }
 
     void onBtnAddClicked(View button) {
         startEditAddActivity(REQUEST_CODE_ALARM_CREATE,
-         new Alarm("Будильник " + alarms.size(), alarms.size(), false), "Создание будильника");
+         new Alarm("Будильник " + alarms.size(), alarms.size()), "Создание будильника");
     }
 
     void startEditAddActivity(int code, Alarm entity, String action) {

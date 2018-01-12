@@ -11,13 +11,11 @@ public class Alarm implements Serializable {
 
     String name;//название будильника
     Integer id;
+
     Boolean isOn;//включен ли будильник
     SignalType signalType; //тип сигнала будильника
-
-    Uri AlarmTone;
-
-    int timeHour; //час срабатывания
-    int timeMinute; //время срабатывания
+    Integer timeHour; //час срабатывания
+    Integer timeMinute; //время срабатывания
 
     boolean[] daysOfWeek;//дни недели,в которые будильник срабатывает
 
@@ -37,10 +35,10 @@ public class Alarm implements Serializable {
         this.timeMinute = timeMinute;
     }
 
-    public Alarm(String name, Integer id, Boolean isOn) {
+    public Alarm(String name, Integer id) {
         this.name = name;
         this.id = id;
-        this.isOn = isOn;
+        this.isOn = false;//значение по умолчанию
         this.signalType = SignalType.Melody;//default
         this.timeHour = 0;
         this.timeMinute = 0;
@@ -90,19 +88,49 @@ public class Alarm implements Serializable {
     //строковое представление времени
     public String getTimeView() {
         String timeFormat = "%s:%s";
-        String hourView = String.valueOf(this.timeHour);
-        String minuteView = String.valueOf(this.timeMinute);
-
-        if (this.timeHour < 10) {
-            hourView = "0" + hourView;
-
-        }
-
-        if (this.timeMinute < 10) {
-            minuteView = "0" + minuteView;
-        }
-
+        String hourView = getHourView(null);
+        String minuteView = getMinuteView(null);
         return String.format(timeFormat, hourView, minuteView);
+    }
+
+    public String getMinuteView(Integer timeMinute) {
+        if (timeMinute == null)
+            timeMinute = this.timeMinute;
+
+        if (timeMinute > 59)
+            timeMinute = 59;
+
+        if (timeMinute < 10) {
+            return "0".concat(String.valueOf(timeMinute));
+        }
+        return String.valueOf(timeMinute);
+    }
+
+    public String getHourView(Integer timeHour) {
+        if (timeHour == null)
+            timeHour = this.timeHour;
+
+        if (timeHour > 23)
+            timeHour = 23;
+
+        if (timeHour < 10) {
+            return "0".concat(String.valueOf(timeHour));
+        }
+        return String.valueOf(timeHour);
+    }
+
+    private boolean isValidMinute() {
+        int minute = this.timeMinute;
+        return minute >= 0 && minute < 60;
+    }
+
+    private boolean isValidHour() {
+        int hour = this.timeHour;
+        return hour >= 0 && hour <= 23;
+    }
+
+    public boolean isValidTime() {
+        return isValidHour() && isValidMinute();
     }
 
     public String getDayOfWeekView() {
@@ -117,17 +145,12 @@ public class Alarm implements Serializable {
         }
         return result;
     }
-    //звонить каждый день?
-    private boolean isEveryDay() {
+    //звонить каждый день? (если день недели не указан)
+    public boolean isEveryDay() {
         for(boolean day: daysOfWeek) {
             if (day)
                 return false;
         }
-        return true;
-    }
-
-    //звонить сегодня?
-    public boolean isRunningAlarmDayNow() {
         return true;
     }
 }

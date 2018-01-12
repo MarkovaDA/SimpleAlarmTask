@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.alarm.darya.simplealarm.model.Alarm;
 
@@ -27,10 +26,9 @@ public class AlarmReceiver extends BroadcastReceiver {
             alarmScreenTask = new Intent(context, AlarmScreenActivity.class);
 
         int dayIndex = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-        //boolean res = runningAlarm.getDaysOfWeek()[dayIndex - 1];
-        //runningAlarm.isEveryDay();
+        boolean res = runningAlarm.getDaysOfWeek()[dayIndex - 2];
 
-        if (runningAlarm != null ) {
+        if (res || runningAlarm.isEveryDay() && (runningAlarm != null )) {
             Bundle bundle = new Bundle();
             bundle.putSerializable("alarm", runningAlarm);
             alarmScreenTask.putExtras(bundle);

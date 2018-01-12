@@ -48,10 +48,10 @@ public class AlarmEditActivity extends AppCompatActivity {
         txtAlarmTitle.setText(selectedAlarm.getName());
 
         txtAlarmHour = (EditText)findViewById(R.id.txtAlarmHour);
-        txtAlarmHour.setText(String.valueOf(selectedAlarm.getTimeHour()));
+        txtAlarmHour.setText(selectedAlarm.getHourView(null));
 
         txtAlarmMinute = (EditText)findViewById(R.id.txtAlarmMinute);
-        txtAlarmMinute.setText(String.valueOf(selectedAlarm.getTimeMinute()));
+        txtAlarmMinute.setText(selectedAlarm.getMinuteView(null));
 
         btnSave = (Button)findViewById(R.id.btnSave);
         btnSave.setOnClickListener(onBtnSaveClick);

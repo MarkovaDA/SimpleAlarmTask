@@ -6,7 +6,7 @@ import android.content.Context;
 import android.os.SystemClock;
 
 import com.alarm.darya.simplealarm.model.Alarm;
-import com.alarm.darya.simplealarm.model.AlarmEnvironment;
+import com.alarm.darya.simplealarm.model.AlarmService;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,11 +18,9 @@ import static android.content.Context.ALARM_SERVICE;
 
 public class AlarmControlManager {
 
-    private List<AlarmEnvironment> alarms;
+    private List<AlarmService> alarms;
     private AlarmManager alarmManager;
     private Context context;
-
-    private PendingIntent pendingIntent;
 
     public AlarmControlManager(Context context) {
         this.context = context;
@@ -30,22 +28,39 @@ public class AlarmControlManager {
         alarms = new ArrayList<>();
     }
 
+    //добавить новый будильник (зарегистрировать)
     void addAlarm(Alarm alarm) {
-        AlarmEnvironment alarmEnv = new AlarmEnvironment(context, alarm);
-        alarms.add(alarmEnv);
+        AlarmService alarmService = new AlarmService(context, alarm);
+        alarms.add(alarmService);
     }
 
-    //запустить будильник
+    //запустить будильник - index - номер в списке
     void setOnAlarm(int index) {
         if (index >= alarms.size())
             return;
+        AlarmService alarmService = alarms.get(index);
+        Alarm alarm = alarmService.getEntityAlarm();
+        PendingIntent alarmPending = alarmService.getAlarmNewPendingIntent();
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, getSchedule(alarm), alarmPending);
+    }
 
-        AlarmEnvironment alarmEnv = alarms.get(index);
-        Alarm alarm = alarmEnv.getEntityAlarm();
-        PendingIntent alarmPending = alarmEnv.getAlarmNewPendingIntent();
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP,
-                getSchedule(alarm),
-                alarmPending);
+    void setOnAlarm(Alarm alarm) {
+        /*if (!alarm.isValidTime())
+            return;*/
+       int index =  findAlarmIndexByEntity(alarm); //найти будильник по entity
+
+       AlarmService alarmService = alarms.get(index);
+       PendingIntent alarmPending = alarmService.getAlarmNewPendingIntent();
+       alarmManager
+               .setExact(AlarmManager.RTC_WAKEUP, getSchedule(alarm), alarmPending);
+    }
+
+    private int findAlarmIndexByEntity(Alarm entity) {
+        for(AlarmService service: alarms) {
+            if (service.getEntityAlarm().equals(entity))
+                return alarms.indexOf(service);
+        }
+        return -1;
     }
 
     //отложить будильник (на 1 мин)
@@ -53,17 +68,16 @@ public class AlarmControlManager {
         //метод не работает - отредактировать
         if (index >= alarms.size())
             return;
-        AlarmEnvironment alarmEnv = alarms.get(index);
+        AlarmService alarmEnv = alarms.get(index);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 SystemClock.elapsedRealtime() + 1 * 60 * 1000, alarmEnv.getAlarmNewPendingIntent());
     }
-
     //отменить будильник
     void cancelAlarm(int index) {
         if (index >= alarms.size())
             return;
 
-        AlarmEnvironment alarmEnv = alarms.get(index);
+        AlarmService alarmEnv = alarms.get(index);
         PendingIntent alarmPendingIntent =
                 alarmEnv.getCurrentPendingIntent();
         alarmManager.cancel(alarmPendingIntent);
@@ -79,7 +93,7 @@ public class AlarmControlManager {
 
     //редактировать будильник по индексу index
     void editAlarm(Alarm alarm) {
-        AlarmEnvironment alarmEnv = alarms.get(alarm.getId());
+        AlarmService alarmEnv = alarms.get(alarm.getId());
         alarms.get(alarm.getId())
                 .setEntityAlarm(alarm);
         //перезаписываем данные в интент (это не помогает)
@@ -87,13 +101,12 @@ public class AlarmControlManager {
         //если будильник был включен, включаем его согласно новому раписанию
         if (alarm.getOn()) {
             cancelAlarm(alarm.getId()); //отменяем старое расписание
-            setOnAlarm(alarm.getId()); //возобнавляем новое
+            setOnAlarm(alarm.getId()); //устанавливаем новое
         }
-        //перезаписть информацию в intent
     }
 
-    AlarmEnvironment getAlarmByIndex(int index) {
-        return this.alarms.get(index);
+    AlarmService getLastAddedAlarm() {
+        return this.alarms.get(alarms.size() - 1);
     }
 
     private Long getSchedule(Alarm alarm) {
