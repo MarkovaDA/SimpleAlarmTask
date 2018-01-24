@@ -26,6 +26,8 @@ public class AlarmReceiver extends BroadcastReceiver {
             alarmScreenTask = new Intent(context, AlarmScreenActivity.class);
 
         int dayIndex = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        dayIndex = (dayIndex == 1) ? 7 : dayIndex;
+
         boolean res = runningAlarm.getDaysOfWeek()[dayIndex - 2];
 
         if (res || runningAlarm.isEveryDay() && (runningAlarm != null )) {

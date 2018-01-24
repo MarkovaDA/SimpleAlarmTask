@@ -1,7 +1,4 @@
 package com.alarm.darya.simplealarm.model;
-
-import android.net.Uri;
-
 import java.io.Serializable;
 
 

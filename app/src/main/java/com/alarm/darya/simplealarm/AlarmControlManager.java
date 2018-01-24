@@ -28,10 +28,10 @@ public class AlarmControlManager {
         alarms = new ArrayList<>();
     }
 
-    //добавить новый будильник (зарегистрировать)
+    //добавить новый будильник
     void addAlarm(Alarm alarm) {
-        AlarmService alarmService = new AlarmService(context, alarm);
-        alarms.add(alarmService);
+        //поднимаем контекст для будильника
+        alarms.add(new AlarmService(context, alarm));
     }
 
     //запустить будильник - index - номер в списке
@@ -93,15 +93,22 @@ public class AlarmControlManager {
 
     //редактировать будильник по индексу index
     void editAlarm(Alarm alarm) {
-        AlarmService alarmEnv = alarms.get(alarm.getId());
-        alarms.get(alarm.getId())
-                .setEntityAlarm(alarm);
+        /*AlarmService alarmEnv = alarms.get(findAlarmIndexByEntity(alarm));
+        alarms.get(alarm.getId()).setEntityAlarm(alarm);
         //перезаписываем данные в интент (это не помогает)
         alarmEnv.writeAlarmDataToIntent();
         //если будильник был включен, включаем его согласно новому раписанию
         if (alarm.getOn()) {
             cancelAlarm(alarm.getId()); //отменяем старое расписание
             setOnAlarm(alarm.getId()); //устанавливаем новое
+        }*/
+        int index = findAlarmIndexByEntity(alarm);
+        alarms.get(index).setEntityAlarm(alarm);
+        alarms.get(index).writeAlarmDataToIntent();
+
+        if (alarm.getOn()) {
+            cancelAlarm(index);
+            setOnAlarm(index);
         }
     }
 
