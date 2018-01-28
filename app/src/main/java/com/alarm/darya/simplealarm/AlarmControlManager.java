@@ -38,6 +38,7 @@ public class AlarmControlManager {
     void setOnAlarm(int index) {
         if (index >= alarms.size())
             return;
+
         AlarmService alarmService = alarms.get(index);
         Alarm alarm = alarmService.getEntityAlarm();
         PendingIntent alarmPending = alarmService.getAlarmNewPendingIntent();
@@ -45,14 +46,15 @@ public class AlarmControlManager {
     }
 
     void setOnAlarm(Alarm alarm) {
-        /*if (!alarm.isValidTime())
-            return;*/
-       int index =  findAlarmIndexByEntity(alarm); //найти будильник по entity
+        //если время будильника не валидное - включение не должно произойти
+        if (!alarm.isValidTime())
+            return;
+
+       int index =  findAlarmIndexByEntity(alarm);
 
        AlarmService alarmService = alarms.get(index);
        PendingIntent alarmPending = alarmService.getAlarmNewPendingIntent();
-       alarmManager
-               .setExact(AlarmManager.RTC_WAKEUP, getSchedule(alarm), alarmPending);
+       alarmManager.setExact(AlarmManager.RTC_WAKEUP, getSchedule(alarm), alarmPending);
     }
 
     private int findAlarmIndexByEntity(Alarm entity) {
@@ -72,6 +74,7 @@ public class AlarmControlManager {
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 SystemClock.elapsedRealtime() + 1 * 60 * 1000, alarmEnv.getAlarmNewPendingIntent());
     }
+
     //отменить будильник
     void cancelAlarm(int index) {
         if (index >= alarms.size())
@@ -93,15 +96,6 @@ public class AlarmControlManager {
 
     //редактировать будильник по индексу index
     void editAlarm(Alarm alarm) {
-        /*AlarmService alarmEnv = alarms.get(findAlarmIndexByEntity(alarm));
-        alarms.get(alarm.getId()).setEntityAlarm(alarm);
-        //перезаписываем данные в интент (это не помогает)
-        alarmEnv.writeAlarmDataToIntent();
-        //если будильник был включен, включаем его согласно новому раписанию
-        if (alarm.getOn()) {
-            cancelAlarm(alarm.getId()); //отменяем старое расписание
-            setOnAlarm(alarm.getId()); //устанавливаем новое
-        }*/
         int index = findAlarmIndexByEntity(alarm);
         alarms.get(index).setEntityAlarm(alarm);
         alarms.get(index).writeAlarmDataToIntent();
@@ -124,4 +118,5 @@ public class AlarmControlManager {
         calendar.set(Calendar.SECOND, 00);
         return calendar.getTimeInMillis();
     }
+
 }

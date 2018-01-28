@@ -142,6 +142,7 @@ public class Alarm implements Serializable {
         }
         return result;
     }
+
     //звонить каждый день? (если день недели не указан)
     public boolean isEveryDay() {
         for(boolean day: daysOfWeek) {

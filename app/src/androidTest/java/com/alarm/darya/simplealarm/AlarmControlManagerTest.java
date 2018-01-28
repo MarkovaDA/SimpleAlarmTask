@@ -25,9 +25,8 @@ public class AlarmControlManagerTest  {
 
     @Before
     public void init() {
-        //MockitoAnnotations.initMocks(this);
         appContext = InstrumentationRegistry.getTargetContext();
-        this.alarmControlManager = new AlarmControlManager(appContext);
+        alarmControlManager = new AlarmControlManager(appContext);
     }
 
     @Test
@@ -39,23 +38,6 @@ public class AlarmControlManagerTest  {
                 .getLastAddedAlarm().getEntityAlarm(), alarm);
     }
 
-    /*@Test
-    public void setOnAlarmTest() throws Exception {
-        Alarm alarm =
-                new Alarm("Test alarm", 1);
-        //alarm.setTimeHour(12);
-        //alarm.setTimeMinute(24);
-        alarmControlManager.addAlarm(alarm);//добавляем будильник
-        alarmControlManager.setOnAlarm(alarm);//включаем только что добавленный будильник
-
-       assertTrue(PendingIntent
-            .getBroadcast(
-                appContext,
-                0,
-                alarmControlManager.getLastAddedAlarm().getAlarmIntent(),
-                PendingIntent.FLAG_NO_CREATE) !=  null
-            );
-    }*/
 
     @Test
     public void editAlarmTest() throws Exception {
@@ -70,8 +52,30 @@ public class AlarmControlManagerTest  {
         alarm.setOn(true);
         //убеждаемся, что параметры будильника идентичны отредактированным
         alarmControlManager.editAlarm(alarm);
+
         assertEquals(alarmControlManager
                 .getLastAddedAlarm().getEntityAlarm(), alarm);
+    }
+
+    @Test
+    public void setOnAlarmTest() throws Exception {
+        Alarm alarm =
+                new Alarm("Test alarm", 1);
+        //alarm.setTimeHour(12);
+        //alarm.setTimeMinute(24);
+
+        alarmControlManager.addAlarm(alarm);//добавляем будильник
+        alarmControlManager.setOnAlarm(alarm);//включаем только что добавленный будильник
+
+        AlarmService alarmService = alarmControlManager.getLastAddedAlarm();
+
+        //проверяем, что служба данного будильника запущена
+        assertTrue(PendingIntent
+                .getBroadcast(appContext,
+                        alarmService.getIntentId(),
+                        alarmService.getAlarmIntent(),
+                        PendingIntent.FLAG_NO_CREATE) !=  null
+        );
     }
 
 }

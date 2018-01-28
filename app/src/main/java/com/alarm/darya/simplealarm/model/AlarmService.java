@@ -34,8 +34,7 @@ public class AlarmService {
 
         intentId = (int)System.currentTimeMillis();
 
-        alarmPendingIntent = PendingIntent
-                .getBroadcast(context, intentId, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        //alarmPendingIntent = PendingIntent.getBroadcast(context, intentId, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private boolean isAlarmValid(Alarm alarm) {
@@ -58,6 +57,10 @@ public class AlarmService {
 
     public Intent getAlarmIntent() {
         return alarmIntent;
+    }
+
+    public int getIntentId() {
+        return intentId;
     }
 
     public Alarm getEntityAlarm() {
