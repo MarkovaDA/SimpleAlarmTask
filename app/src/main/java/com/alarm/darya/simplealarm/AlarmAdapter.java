@@ -135,7 +135,6 @@ public class AlarmAdapter extends BaseAdapter {
         }
     };
 
-
     DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {

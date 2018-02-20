@@ -29,7 +29,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         dayIndex = (dayIndex == 1) ? 7 : dayIndex;
 
         boolean res = runningAlarm.getDaysOfWeek()[dayIndex - 2];
-
+        //проверка - если время, на которое будильник установлен, больше текущего
         if (res || runningAlarm.isEveryDay() && (runningAlarm != null )) {
             Bundle bundle = new Bundle();
             bundle.putSerializable("alarm", runningAlarm);

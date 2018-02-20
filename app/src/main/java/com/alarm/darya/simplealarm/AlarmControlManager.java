@@ -29,12 +29,16 @@ public class AlarmControlManager {
     }
 
     //добавить новый будильник
-    void addAlarm(Alarm alarm) {
-        //поднимаем контекст для будильника
-        alarms.add(new AlarmService(context, alarm));
+    boolean addAlarm(Alarm alarm) {
+        AlarmService service = new AlarmService(context, alarm);
+        if (service.isValid()) {
+            alarms.add(service);
+            return true;
+        }
+        return false;
     }
 
-    //запустить будильник - index - номер в списке
+    //включить будильник - index - номер в списке
     void setOnAlarm(int index) {
         if (index >= alarms.size())
             return;
@@ -47,7 +51,7 @@ public class AlarmControlManager {
 
     void setOnAlarm(Alarm alarm) {
         //если время будильника не валидное - включение не должно произойти
-        if (!alarm.isValidTime())
+        if (!alarm.isValid())
             return;
 
        int index =  findAlarmIndexByEntity(alarm);
@@ -83,7 +87,8 @@ public class AlarmControlManager {
         AlarmService alarmEnv = alarms.get(index);
         PendingIntent alarmPendingIntent =
                 alarmEnv.getCurrentPendingIntent();
-        alarmManager.cancel(alarmPendingIntent);
+        if (alarmPendingIntent != null)
+            alarmManager.cancel(alarmPendingIntent);
     }
 
     void deleteAlarm(int index) {

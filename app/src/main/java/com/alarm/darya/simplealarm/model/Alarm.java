@@ -37,9 +37,21 @@ public class Alarm implements Serializable {
         this.id = id;
         this.isOn = false;//значение по умолчанию
         this.signalType = SignalType.Melody;//default
-        this.timeHour = 0;
-        this.timeMinute = 0;
         daysOfWeek = new boolean[count];
+    }
+
+    private boolean isValidMinute() {
+        Integer minute = this.timeMinute;
+        return minute != null &&  minute >= 0 && minute < 60;
+    }
+
+    private boolean isValidHour() {
+        Integer hour = this.timeHour;
+        return hour != null && hour >= 0 && hour <= 23;
+    }
+
+    private boolean isValidTime() {
+        return isValidHour() && isValidMinute();
     }
 
     public boolean[] getDaysOfWeek() {
@@ -85,49 +97,29 @@ public class Alarm implements Serializable {
     //строковое представление времени
     public String getTimeView() {
         String timeFormat = "%s:%s";
-        String hourView = getHourView(null);
-        String minuteView = getMinuteView(null);
+        String hourView = getHourView();
+        String minuteView = getMinuteView();
         return String.format(timeFormat, hourView, minuteView);
     }
 
-    public String getMinuteView(Integer timeMinute) {
+    public String getMinuteView() {
         if (timeMinute == null)
-            timeMinute = this.timeMinute;
-
-        if (timeMinute > 59)
-            timeMinute = 59;
-
-        if (timeMinute < 10) {
-            return "0".concat(String.valueOf(timeMinute));
-        }
+            return "";
         return String.valueOf(timeMinute);
     }
 
-    public String getHourView(Integer timeHour) {
+    public String getHourView() {
         if (timeHour == null)
-            timeHour = this.timeHour;
-
-        if (timeHour > 23)
-            timeHour = 23;
-
-        if (timeHour < 10) {
-            return "0".concat(String.valueOf(timeHour));
-        }
+            return "";
         return String.valueOf(timeHour);
     }
 
-    private boolean isValidMinute() {
-        int minute = this.timeMinute;
-        return minute >= 0 && minute < 60;
-    }
-
-    private boolean isValidHour() {
-        int hour = this.timeHour;
-        return hour >= 0 && hour <= 23;
-    }
-
-    public boolean isValidTime() {
-        return isValidHour() && isValidMinute();
+    public boolean isValid() {
+        return (this.id != null &&
+                this.name != null &&
+                this.name != "" &&
+                this.isValidTime()
+        );
     }
 
     public String getDayOfWeekView() {

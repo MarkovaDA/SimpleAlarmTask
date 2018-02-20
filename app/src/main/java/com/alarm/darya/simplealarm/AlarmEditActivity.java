@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alarm.darya.simplealarm.model.Alarm;
 import com.alarm.darya.simplealarm.model.SignalType;
@@ -48,10 +49,10 @@ public class AlarmEditActivity extends AppCompatActivity {
         txtAlarmTitle.setText(selectedAlarm.getName());
 
         txtAlarmHour = (EditText)findViewById(R.id.txtAlarmHour);
-        txtAlarmHour.setText(selectedAlarm.getHourView(null));
+        txtAlarmHour.setText(selectedAlarm.getHourView());
 
         txtAlarmMinute = (EditText)findViewById(R.id.txtAlarmMinute);
-        txtAlarmMinute.setText(selectedAlarm.getMinuteView(null));
+        txtAlarmMinute.setText(selectedAlarm.getMinuteView());
 
         btnSave = (Button)findViewById(R.id.btnSave);
         btnSave.setOnClickListener(onBtnSaveClick);
@@ -66,10 +67,24 @@ public class AlarmEditActivity extends AppCompatActivity {
                 return;
             }
             else {
+                //cоздаём новую сущность будильника и передаем ее родительской активити для добавления
                 selectedAlarm.setName(txtAlarmTitle.getText().toString());
-                //selectedAlarm.setSchedule(txtAlarmTime.getText().toString());
-                selectedAlarm.setTimeHour(parseInt(txtAlarmHour.getText().toString()));
-                selectedAlarm.setTimeMinute(parseInt(txtAlarmMinute.getText().toString()));
+                String minuteInput = txtAlarmHour.getText().toString();
+                String hourInput = txtAlarmMinute.getText().toString();
+
+                if (!isInteger(minuteInput) || !isInteger(hourInput)) {
+                    notifyErrorAlarmCreation();
+                    return;
+                }
+
+                selectedAlarm.setTimeHour(parseInt(minuteInput));
+                selectedAlarm.setTimeMinute(parseInt(hourInput));
+
+                //какие-то параметры будильника заполнены некорректно
+                if (!selectedAlarm.isValid()) {
+                    notifyErrorAlarmCreation();
+                    return;
+                }
 
                 Intent currentIntent = getIntent();
                 Bundle bundle = new Bundle();
@@ -135,5 +150,22 @@ public class AlarmEditActivity extends AppCompatActivity {
     void onTimeSelectBtnClicked(View btn) {
         Intent intent = new Intent(AlarmEditActivity.this, TimeSelectActivity.class);
         startActivity(intent);
+    }
+
+    private void notifyErrorAlarmCreation() {
+        Toast.makeText( AlarmEditActivity.this,
+                "Параметры будильника некорректны", Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+        } catch(NumberFormatException e) {
+            return false;
+        } catch(NullPointerException e) {
+            return false;
+        }
+        // only got here if we didn't return false
+        return true;
     }
 }

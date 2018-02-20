@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             Bundle bundle = childIntent.getExtras();
             Alarm editedAlarm = (Alarm)bundle.getSerializable("selectedAlarm");
+            //обработка запроса на создание-редактирование будильника
             switch (requestCode) {
                 case REQUEST_CODE_ALARM_EDIT:
                     alarms.set(editedAlarm.getId(), editedAlarm);//редактирование будильника

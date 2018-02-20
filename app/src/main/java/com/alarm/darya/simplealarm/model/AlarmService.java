@@ -1,6 +1,5 @@
 package com.alarm.darya.simplealarm.model;
 
-
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -21,24 +20,22 @@ public class AlarmService {
     private Context context;
 
     public AlarmService(Context ctx, Alarm alarm) {
+        if (ctx == null)
+            return;
 
-        if (!isAlarmValid(alarm))
+        if (alarm == null || !alarm.isValid())
             return;
 
         context = ctx;
         entityAlarm = alarm;
-        alarmIntent =
-                new Intent(context, AlarmReceiver.class);
+        alarmIntent = new Intent(context, AlarmReceiver.class);
 
         writeAlarmDataToIntent();
-
         intentId = (int)System.currentTimeMillis();
-
-        //alarmPendingIntent = PendingIntent.getBroadcast(context, intentId, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
-    private boolean isAlarmValid(Alarm alarm) {
-        return (alarm.id == null || alarm.name == null || alarm.name != "");
+    public boolean isValid() {
+        return context != null && entityAlarm.isValid();
     }
 
     public PendingIntent getAlarmNewPendingIntent() {
@@ -55,24 +52,12 @@ public class AlarmService {
         return alarmPendingIntent;
     }
 
-    public Intent getAlarmIntent() {
-        return alarmIntent;
-    }
-
-    public int getIntentId() {
-        return intentId;
-    }
-
     public Alarm getEntityAlarm() {
         return entityAlarm;
     }
 
     public void setEntityAlarm(Alarm entityAlarm) {
         this.entityAlarm = entityAlarm;
-    }
-
-    public void setAlarmIntent(Intent alarmIntent) {
-        this.alarmIntent = alarmIntent;
     }
 
     //метод записи в интенет должен вызываться и при каждом обновлении/редактировании будильника
